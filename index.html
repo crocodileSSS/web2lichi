@@ -86,35 +86,161 @@
     </div>
 
     <!-- Coze SDK -->
-    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.10/libs/cn/index.js"></script>
     <script>
-      // 生成唯一会话ID - 每次打开页面都是全新对话
-      function getSessionId() {
-        const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        console.log('新会话ID:', sessionId);
-        return sessionId;
-      }
+    (function() {
+        // 配置参数
+        const COZE_CONFIG = {
+            botId: '7601409343573393451',
+            appId: '1129319981964',
+            publicKey: 'twEibxzMELe1rZX-801zxjEQXN82F47ZCZla2Cz5dy8',
+            privateKey: `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC47kCTVT+zoa6t
+JPBRqE133e1bPIuCVfW6dnxrR32OUyszgJpAoSMS8r3cnIFfj/XTjX2xx36egW5R
+bFL6SnFG4NFrTuDUS5VbpxBrKn9O2waHgR/pa7sph2tPUGbb/+RuoUaQkQd2k+5e
+CAc5tM3xUMuOjbfIe3kl2DNRk5NcusvV5V1Ej7PFZpzbHxaJpw5Xk3ZCzYQmgkaJ
+b/kuA09PRFXf+c9UxDWzq7OQI6uB02Ib5PCgNTE9u5IFq6UXMgrkZv7fx91O64gP
+tMQ0FEHZHsq5uKj3eZif3cCxSYUlIkZpwZGxRWGk9Fhkwylh4j8rwmJM1sJwYaQz
+6fWWaTfvAgMBAAECggEAQTpoNI+BJI8G2bOJwIOor3rr2Z6FZreDMP3R7NUOiED1
+n/jgb6Nmh6xvI31gdKCGiNQDXc2L78SfcMDQk8/mHKX3t+3eh4MRb36B4ArhVKMU
+rn7xDpgdMAy/4P3vCfI8VHk2No+xHjYXgbs7MTOA4HkrE2ERTfmfRaX4k/GFrNLr
+zdMcXGsIeuCRPQYa1USl9xTEw+Bj40Q5VI8Wk+D2N8dK8E3gkzDKy3MgPR59p+BZ
+kFxhrd+I1Z/4aEmsJdh/dfQSlb1u8zZ0+5ZpoDEn6MizWtvdxP4a+zJ25mqbNc9H
+82cUq3vpqtqZpl82mjJsOGTRSJjntkV2bnx2x7mbQQKBgQDz0RXor6IaYReH4Gb+
+I2zLyxbExkVBaI9nogTv6NUyG5XSLW++CSxYlT65fLGegrHjmiiAL/RSzZEnc7hN
+xNJlbT2on0zwrYYewcs3xa2U77B3yY5nu/+GEbltniEMetzC7Unf4TU/h7gOAqy8
+93ATF2wQCZeTE2BqSSdjeSrZFwKBgQDCK+S9GnMxZws3NFBwVqPrgW0wyu1w0Og7
+hemx1jfKzH6CX3iPW0J6mMGiaChwxkYc6OKlZPGiLfmfD468GxUIk/XmjkSQCjC9
+DMGT+jhWmOPNNNYJaCzcXS0d3OA/P/jm/qvJ4fP9tvKd60UaZ2we75o2S3ZJ6Diu
+EVsqGYSu6QKBgGGbBmZMSVy+GalvkEuU6uz6tHa52OfCcAZQuiFA2HhiyquFPQKa
+sYIU3TNsU77dG1G+WRBYIjszyDQ/Az0+2et4vAJRI4AGN3cApdYB8Od6vO53Zebp
+P/XwCodzkk9osA/o5nYVtjdkoa4aLATKGbfK3Jve+ysJysNB3d7YluqpAoGAGhQP
+Gp7MzdvLE9UA4LWiOmUdpyn6Debg6e2oX2wn/iLM8vGjnY1iNlkB2LAojkzy6bsV
+haUzFtcZ6ZULVJRGlOpaYmbFKptTxHBMJ3W5z1elcNAh1w2YyNfy0UnzDEupQE0A
+AZNJU9AYccFBfLRbPyRrD9O+xVpdEnPeTJ80xNECgYEAwS4B0HLwgoKlVpRKNRfB
+tvwRCpXuCNC8W7B7shLVNn4EqHvahnxev1yUvFX387IsL2vUv204SUoU7xMNbMLQ
+lZbEnTm53n7ZAMWx4q6NiidKxJl57GKqt16kymoI4PX++r3DP81SIJntckG0eIWl
+dYE8QDU83e2aw/4sEmLOizU=
+-----END PRIVATE KEY-----`
+        };
 
-      const userId = getSessionId();
-
-      new CozeWebSDK.WebChatClient({
-        config: {
-          bot_id: '7601409343573393451',
-          isframe: false,
-          user_id: userId,
-          sensible: false
-        },
-        componentProps: {
-          title: 'AI对话助手',
-        },
-        auth: {
-          type: 'token',
-          token: 'pat_dmc6cMegEnqCZpT5kNjqZ6gaftRhzutkiwuFDo4L4D9aZlI2OLcIbt9gscXdYktP',
-          onRefreshToken: function () {
-            return 'pat_dmc6cMegEnqCZpT5kNjqZ6gaftRhzutkiwuFDo4L4D9aZlI2OLcIbt9gscXdYktP'
-          }
+        // 加载JWT库
+        function loadJwtLibrary() {
+            return new Promise((resolve, reject) => {
+                if (window.KJUR && window.KJUR.jws && window.KJUR.jws.JWS) {
+                    resolve();
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/8.0.20/jsrsasign-all-min.js';
+                script.crossOrigin = 'anonymous';
+                script.onload = () => {
+                    if (window.KJUR && window.KJUR.jws && window.KJUR.jws.JWS) {
+                        resolve();
+                    } else {
+                        reject(new Error('JWT库加载但未正确初始化'));
+                    }
+                };
+                script.onerror = () => reject(new Error('JWT库加载失败'));
+                document.head.appendChild(script);
+            });
         }
-      });
+
+        // 生成JWT
+        function generateCozeJwt(userUid) {
+            const header = {
+                alg: 'RS256',
+                typ: 'JWT',
+                kid: COZE_CONFIG.publicKey
+            };
+            const currentTime = Math.floor(Date.now() / 1000);
+            const payload = {
+                iss: COZE_CONFIG.appId,
+                aud: "api.coze.cn",
+                jti: Math.random().toString(36).substr(2, 32) + Date.now(),
+                iat: currentTime,
+                exp: currentTime + 3600,
+                session_name: userUid
+            };
+            return window.KJUR.jws.JWS.sign(
+                header.alg,
+                JSON.stringify(header),
+                JSON.stringify(payload),
+                COZE_CONFIG.privateKey
+            );
+        }
+
+        // 获取用户唯一标识
+        function getUserUid() {
+            let visitorId = localStorage.getItem('coze_visitor_id');
+            if (!visitorId) {
+                visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                localStorage.setItem('coze_visitor_id', visitorId);
+            }
+            return visitorId;
+        }
+
+        // 初始化Coze聊天
+        async function initCozeChat() {
+            try {
+                const userUid = getUserUid();
+                const jwtToken = generateCozeJwt(userUid);
+
+                const response = await fetch("https://api.coze.cn/api/permission/oauth2/token", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                    body: JSON.stringify({
+                        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                        duration_seconds: 900
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`获取token失败: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                new CozeWebSDK.WebChatClient({
+                    config: {
+                        bot_id: COZE_CONFIG.botId,
+                        isframe: false
+                    },
+                    componentProps: {
+                        title: 'AI对话助手'
+                    },
+                    auth: {
+                        type: 'token',
+                        token: data.access_token,
+                        onRefreshToken: () => data.access_token
+                    }
+                });
+
+                console.log('Coze聊天已初始化，用户ID:', userUid);
+            } catch (error) {
+                console.error('初始化失败:', error.message);
+            }
+        }
+
+        // 初始化流程
+        async function init() {
+            try {
+                await loadJwtLibrary();
+                initCozeChat();
+            } catch (error) {
+                console.error('初始化失败:', error.message);
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            init();
+        } else {
+            window.addEventListener('load', init);
+        }
+    })();
     </script>
 </body>
 </html>
