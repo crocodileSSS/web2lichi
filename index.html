@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI对话助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .title {
+            font-size: 72px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+            margin-bottom: 60px;
+            letter-spacing: 8px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+            }
+            to {
+                text-shadow: 0 0 50px rgba(99, 102, 241, 0.8), 0 0 80px rgba(99, 102, 241, 0.4);
+            }
+        }
+
+        .robot-container {
+            position: relative;
+            margin-bottom: 80px;
+        }
+
+        .robot {
+            font-size: 120px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .arrow-container {
+            position: fixed;
+            right: 120px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            animation: point 1.5s ease-in-out infinite;
+        }
+
+        @keyframes point {
+            0%, 100% {
+                transform: translateY(-50%) translateX(0);
+            }
+            50% {
+                transform: translateY(-50%) translateX(-10px);
+            }
+        }
+
+        .instruction {
+            font-size: 20px;
+            color: #a5b4fc;
+            white-space: nowrap;
+            background: rgba(99, 102, 241, 0.2);
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 2px solid rgba(99, 102, 241, 0.4);
+        }
+
+        .arrow {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #a5b4fc);
+            position: relative;
+            margin-right: 15px;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 8px solid transparent;
+            border-left-color: #a5b4fc;
+        }
+
+        .features {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .feature {
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 16px;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <h1 class="title">AI对话助手</h1>
+
+        <div class="robot-container">
+            <span class="robot">🤖</span>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">💬</div>
+                <div class="feature-text">智能对话</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">快速响应</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-text">精准回答</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="arrow-container">
+        <div class="arrow"></div>
+        <div class="instruction">请点击右侧紫色悬浮窗对话</div>
+    </div>
+
+    <!-- Coze SDK -->
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+    <script>
+      // 生成或获取用户唯一ID
+      function getOrCreateUserId() {
+        const STORAGE_KEY = 'coze_user_id';
+        let userId = localStorage.getItem(STORAGE_KEY);
+        if (!userId) {
+          userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          localStorage.setItem(STORAGE_KEY, userId);
+          console.log('新用户ID已生成:', userId);
+        } else {
+          console.log('使用已存在的用户ID:', userId);
+        }
+        return userId;
+      }
+
+      const userId = getOrCreateUserId();
+
+      new CozeWebSDK.WebChatClient({
+        config: {
+          bot_id: '7601409343573393451',
+          isframe: false,
+          user_id: userId,
+          sensible: false
+        },
+        componentProps: {
+          title: 'AI对话助手',
+        },
+        auth: {
+          type: 'token',
+          token: 'pat_dmc6cMegEnqCZpT5kNjqZ6gaftRhzutkiwuFDo4L4D9aZlI2OLcIbt9gscXdYktP',
+          onRefreshToken: function () {
+            return 'pat_dmc6cMegEnqCZpT5kNjqZ6gaftRhzutkiwuFDo4L4D9aZlI2OLcIbt9gscXdYktP'
+          }
+        }
+      });
+    </script>
+
+    <script>
+        // 生成星星背景
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
+
